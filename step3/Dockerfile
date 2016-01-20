@@ -1,5 +1,5 @@
 FROM oracle-12c:created
-MAINTAINER Wouter Scherphof <wouter.scherphof@gmail.com>
+MAINTAINER Wesley Hartford <wesley@cutterslade.ca>
 
 RUN rm /tmp/create
 
