@@ -1,14 +1,14 @@
 FROM oracle-12c:installed
 MAINTAINER Wesley Hartford <wesley@cutterslade.ca>
 
+ENV ORACLE_SID ORCL
+ENV ORACLE_HOME $ORACLE_BASE/product/12.1.0/dbhome_1
+ENV PATH $ORACLE_HOME/bin:$PATH
+
 ADD initORCL.ora $ORACLE_HOME/dbs/initORCL.ora
 ADD createdb.sql $ORACLE_HOME/config/scripts/createdb.sql
 ADD conf_finish.sql $ORACLE_HOME/config/scripts/conf_finish.sql
 ADD create /tmp/create
-
-ENV ORACLE_SID ORCL
-ENV ORACLE_HOME $ORACLE_BASE/product/12.1.0/dbhome_1
-ENV PATH $ORACLE_HOME/bin:$PATH
 
 RUN rm -rf /tmp/install && \
     $ORACLE_HOME/root.sh && \

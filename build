@@ -7,9 +7,11 @@ then
   docker build -t oracle-12c:step1 step1
   docker run --privileged --name step1 oracle-12c:step1
   docker commit step1 oracle-12c:installed
+  docker rm step1
   docker build -t oracle-12c:step2 step2
   docker run --privileged --name step2 oracle-12c:step2
   docker commit step2 oracle-12c:created
+  docker rm step2
   docker build -t oracle-12c step3
 else
   echo "Oracle install files are required in step1 directory"
