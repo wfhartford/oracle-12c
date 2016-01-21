@@ -2,17 +2,21 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-if [ -f step1/linuxamd64_12102_database_1of2.zip -a -f step1/linuxamd64_12102_database_2of2.zip ]
+if [ ! -f step1/oracle-12.1.0.2-1.zip ]
 then
-  docker build -t oracle-12c:step1 step1
-  docker run --privileged --name step1 oracle-12c:step1
-  docker commit step1 oracle-12c:installed
-  docker rm step1
-  docker build -t oracle-12c:step2 step2
-  docker run --privileged --name step2 oracle-12c:step2
-  docker commit step2 oracle-12c:created
-  docker rm step2
-  docker build -t oracle-12c step3
-else
-  echo "Oracle install files are required in step1 directory"
+  wget http://repo.zepower.com/content/groups/public/com/oracle/oracle/12.1.0.2/oracle-12.1.0.2-1.zip -O step1/oracle-12.1.0.2-1.zip
 fi
+if [ ! -f step1/oracle-12.1.0.2-2.zip ]
+then
+  wget http://repo.zepower.com/content/groups/public/com/oracle/oracle/12.1.0.2/oracle-12.1.0.2-2.zip -O step1/oracle-12.1.0.2-2.zip
+fi
+
+docker build -t oracle-12c:step1 step1
+docker run --privileged --name step1 oracle-12c:step1
+docker commit step1 oracle-12c:installed
+docker rm step1
+docker build -t oracle-12c:step2 step2
+docker run --privileged --name step2 oracle-12c:step2
+docker commit step2 oracle-12c:created
+docker rm step2
+docker build -t oracle-12c step3

@@ -4,8 +4,8 @@ MAINTAINER Wesley Hartford <wesley@cutterslade.ca>
 ENV ORACLE_BASE /u01/app/oracle
 ENV CVUQDISK_GRP oinstall
 
-ADD linuxamd64_12102_database_1of2.zip /tmp/install/linuxamd64_12102_database_1of2.zip
-ADD linuxamd64_12102_database_2of2.zip /tmp/install/linuxamd64_12102_database_2of2.zip
+ADD oracle-12.1.0.2-1.zip /tmp/install/oracle-12.1.0.2-1.zip
+ADD oracle-12.1.0.2-2.zip /tmp/install/oracle-12.1.0.2-2.zip
 ADD oraInst.loc /etc/oraInst.loc
 ADD sysctl.conf /etc/sysctl.conf
 ADD db_install.rsp /tmp/db_install.rsp
@@ -14,8 +14,8 @@ ADD install /tmp/install/install
 RUN yum -y install unzip binutils compat-libcap1 compat-libstdc++-33 compat-libstdc++-33.i686 gcc gcc-c++ glibc.i686 glibc glibc-devel glibc-devel.i686 ksh libgcc.i686 libgcc libstdc++ libstdc++.i686 libstdc++-devel libstdc++-devel.i686 libaio libaio.i686 libaio-devel libaio-devel.i686 libXext libXext.i686 libXtst libXtst.i686 libX11 libX11.i686 libXau libXau.i686 libxcb libxcb.i686 libXi libXi.i686 make sysstat vte3 smartmontools && \
     yum -y clean all && \
     cd /tmp/install && \
-    unzip linuxamd64_12102_database_1of2.zip && \
-    unzip linuxamd64_12102_database_2of2.zip && \
+    unzip oracle-12.1.0.2-1.zip && \
+    unzip oracle-12.1.0.2-2.zip && \
     rm *.zip && \
     groupadd -g 54321 oinstall && \
     groupadd -g 54322 dba && \
