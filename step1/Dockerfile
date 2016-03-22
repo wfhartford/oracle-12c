@@ -33,6 +33,7 @@ RUN yum -y install unzip binutils compat-libcap1 compat-libstdc++-33 compat-libs
     chmod 664 /etc/oraInst.loc && \
     echo "oracle soft stack 10240" >> /etc/security/limits.conf && \
     cd /tmp/install/database/rpm && \
-    rpm -iv cvuqdisk-1.0.9-1.rpm
+    rpm -i cvuqdisk-1.0.9-1.rpm && \
+    rm -rf /var/cache/yum /var/lib/rpm
 
 CMD /tmp/install/install

@@ -2,21 +2,49 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+ORACLE_ZIP_1_URL=http://repo.zepower.com/content/groups/public/com/oracle/oracle/12.1.0.2/oracle-12.1.0.2-1.zip
+ORACLE_ZIP_2_URL=http://repo.zepower.com/content/groups/public/com/oracle/oracle/12.1.0.2/oracle-12.1.0.2-2.zip
+SQUASH_URL=https://github.com/jwilder/docker-squash/releases/download/v0.2.0/docker-squash-linux-amd64-v0.2.0.tar.gz
+
 if [ ! -f step1/oracle-12.1.0.2-1.zip ]
 then
-  wget http://repo.zepower.com/content/groups/public/com/oracle/oracle/12.1.0.2/oracle-12.1.0.2-1.zip -O step1/oracle-12.1.0.2-1.zip
+  wget $ORACLE_ZIP_1_URL -O step1/oracle-12.1.0.2-1.zip
 fi
 if [ ! -f step1/oracle-12.1.0.2-2.zip ]
 then
-  wget http://repo.zepower.com/content/groups/public/com/oracle/oracle/12.1.0.2/oracle-12.1.0.2-2.zip -O step1/oracle-12.1.0.2-2.zip
+  wget $ORACLE_ZIP_2_URL -O step1/oracle-12.1.0.2-2.zip
 fi
 
 docker build -t oracle-12c:step1 step1
 docker run --privileged --name step1 oracle-12c:step1
 docker commit step1 oracle-12c:installed
 docker rm step1
+docker rmi oracle-12c:step1
 docker build -t oracle-12c:step2 step2
+docker rmi oracle-12c:installed
 docker run --privileged --name step2 oracle-12c:step2
 docker commit step2 oracle-12c:created
 docker rm step2
+docker rmi oracle-12c:step2
 docker build -t oracle-12c step3
+docker rmi oracle-12c:created
+
+exit 0
+
+# The docker squash tool seems to be broken due to a new repository format as of docker 1.10, otherwise the following would reduce the repository size considerably.
+mkdir -p squash/tmp
+
+if [ ! -f squash/docker-squash ]
+then
+  if [ ! -f squash/docker-squash.tar.gz ]
+  then
+    wget $SQUASH_URL -O squash/docker-squash.tar.gz
+  fi
+  tar -C squash -xf squash/docker-squash.tar.gz
+fi
+
+docker save oracle-12c:fat | sudo TMPDIR=$(pwd)/squash/tmp squash/docker-squash -from root -t oracle-12c:squashed -verbose | bzip2 > squash/squashed.tbz
+docker rmi oracle-12c:fat
+bzcat squash/squashed.tbz | docker load
+docker tag oracle-12c:squashed oracle-12c:latest
+docker rmi oracle-12c:squashed
