@@ -1,0 +1,7 @@
+#!/bin/bash
+
+docker run -d --privileged --name zema-blank oracle-12c-flat
+docker cp database_creation zema-blank:/tmp/
+docker exec zema-blank sqlplus -L -S sys/change_on_install as sysdba @/tmp/database_creation/1create_database_main.sql
+docker stop zema-blank
+docker commit zema-blank oracle-12c-flat-zema-blank
